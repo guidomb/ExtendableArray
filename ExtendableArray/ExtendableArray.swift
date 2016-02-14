@@ -67,7 +67,7 @@ public struct ExtendableArray<Element>: ArrayLiteralConvertible, ArrayConvertibl
     }
     
     public subscript (position: Int) -> Element {
-        if position < count {
+        if !_left.isEmpty && position < count {
             return _left[count - position - 1]
         } else {
             return _right[position]
