@@ -12,13 +12,14 @@ public struct ExtendableArray<Element>: ArrayLiteralConvertible, ArrayConvertibl
     
     private var _left: [Element]
     private var _right: SplitArray<Element>
+    private var _count: Int
     
     public var isEmpty: Bool {
         return _left.isEmpty && _right.isEmpty
     }
     
     public var count: Int {
-        return _left.count + _right.count
+        return _count
     }
     
     public var first: Element? {
@@ -48,6 +49,7 @@ public struct ExtendableArray<Element>: ArrayLiteralConvertible, ArrayConvertibl
     public init(array: [Element]) {
         _left = []
         _right = SplitArray(array: array)
+        _count = array.count
     }
     
     public init() {
@@ -74,18 +76,22 @@ public struct ExtendableArray<Element>: ArrayLiteralConvertible, ArrayConvertibl
     
     public mutating func append(element: Element) {
         _right.append(element)
+        _count += 1
     }
     
     public mutating func appendContentsOf(elements: [Element]) {
         _right.appendContentsOf(elements)
+        _count += elements.count
     }
     
     public mutating func prepend(element: Element) {
         _left.append(element)
+        _count += 1
     }
     
     public mutating func prependContentsOf(elements: [Element]) {
         _left.appendContentsOf(elements.reverse())
+        _count += elements.count
     }
     
     public func toArray() -> [Element] {
@@ -103,6 +109,7 @@ private extension ExtendableArray {
     init(left: [Element], right: SplitArray<Element>) {
         _left = left
         _right = right
+        _count = left.count + right.count
     }
     
 }

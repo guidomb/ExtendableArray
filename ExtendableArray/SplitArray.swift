@@ -15,6 +15,7 @@ public struct SplitArray<Element>:
     ArrayConvertible {
     
     private var container: SplitArrayContainer<Element>
+    private var _count: Int
     
     public var isEmpty: Bool {
         switch container {
@@ -24,11 +25,7 @@ public struct SplitArray<Element>:
     }
     
     public var count: Int {
-        switch container {
-        case .Empty: return 0
-        case .Full(let elements): return elements.count
-        case .Split(let left, let right): return left.count + right.count
-        }
+        return _count
     }
     
     public var first: Element? {
@@ -60,8 +57,10 @@ public struct SplitArray<Element>:
     public init(array: [Element]) {
         if array.isEmpty {
             container = .Empty
+            _count = 0
         } else {
             container = .Full(array)
+            _count = array.count
         }
     }
     
@@ -106,10 +105,11 @@ public struct SplitArray<Element>:
         case .Full(let left): container = SplitArrayContainer(left: left, right: elements)
         case .Split(let left, let right): container = left + right + elements
         }
+        _count += elements.count
     }
     
     public mutating func prepend(element: Element) {
-        return prependContentsOf([element])
+        prependContentsOf([element])
     }
     
     public mutating func prependContentsOf(elements: [Element]) {
@@ -118,6 +118,7 @@ public struct SplitArray<Element>:
         case .Full(let right): container = SplitArrayContainer(left: elements, right: right)
         case .Split(let left, let right): container = elements + left + right
         }
+        _count += elements.count
     }
     
     public func toArray() -> [Element] {
@@ -152,11 +153,25 @@ private extension SplitArray {
     
     init(container: SplitArrayContainer<Element>) {
         switch container {
-        case .Full(let elements) where elements.isEmpty: self.container = .Empty
-        case .Split(let left, let right) where left.isEmpty && right.isEmpty: self.container = .Empty
-        case .Split(let left, let right) where left.isEmpty: self.container = right.container
-        case .Split(let left, let right) where right.isEmpty: self.container = left.container
-        default: self.container = container
+        case .Empty:
+            self.container = .Empty
+            _count = 0
+        case .Full(let elements) where elements.isEmpty:
+            self.container = .Empty
+            _count = 0
+        case .Split(let left, let right) where left.isEmpty && right.isEmpty:
+            self.container = .Empty
+            _count = 0
+        case .Split(let left, let right) where left.isEmpty:
+            self.container = right.container
+            _count = right.count
+        case .Split(let left, let right) where right.isEmpty:
+            self.container = left.container
+            _count = left.count
+        case .Split(let left, let right):
+            self.container = container
+            _count = left.count + right.count
+        default: fatalError("Invalid case") // The compiler does not realise all cases have been covered
         }
     }
     
