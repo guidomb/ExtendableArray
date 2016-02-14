@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct ExtendableArray<Element>: ArrayLiteralConvertible, ArrayConvertible {
+public struct ExtendableArray<Element>: ArrayType, ArrayLiteralConvertible, ArrayConvertible {
     
     private var _left: [Element]
     private var _right: SplitArray<Element>
