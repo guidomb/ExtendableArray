@@ -10,6 +10,8 @@ import Foundation
 
 public protocol ArrayType: CollectionType {
     
+    subscript (position: Int) -> Self.Generator.Element { get }
+    
     mutating func append(element: Self.Generator.Element)
     
     mutating func appendContentsOf(elements: [Self.Generator.Element])
