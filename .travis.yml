@@ -1,0 +1,11 @@
+language: objective-c
+osx_image: xcode7.2
+before_install:
+- gem install bundler
+- source script/.env
+script:
+- DISABLE_SWIFTLINT_RUN_SCRIPT=true FORCE_CARTHAGE_VERSION=true script/cibuild
+after_success: bundle exec slather
+branches:
+  only:
+  - master
