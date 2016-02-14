@@ -1,0 +1,4 @@
+coverage_service: coveralls
+xcodeproj: ./ExtendableArray.xcodeproj
+ignore:
+  - ExtendableArrayTests/*
